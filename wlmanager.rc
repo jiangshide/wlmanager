@@ -1,0 +1,3 @@
+service wlmanager /system/bin/wl_manager
+    class main
+    user system

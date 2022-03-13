@@ -1,0 +1,48 @@
+
+cc_binary {
+    name: "wl_manager",
+    srcs: [
+        "aidl/com/jingos/IBinderWLManagerService.aidl",
+        "src/main.cpp",
+        "src/WLManagerService.cpp",
+        "src/MessageQueue.cpp",
+    ],
+    shared_libs: [
+	    "libbinder",
+	    "libcutils",
+	    "libui",
+	    "libgui",
+	    "liblog",
+	    "libutils",
+    ],
+}
+
+cc_binary {
+    name: "wl_client",
+    srcs: [
+        "src/wl_client/WaylandWindowManager.cpp",
+        "src/wl_client/WaylandSingleWindowManager.cpp",
+        "src/wl_client/xdg-shell-protocol.c",
+        "src/wl_client/VirtualDisplayManager.cpp",
+        "src/wl_client/WLFrameOutput.cpp",
+        "src/wl_client/WLConsumer.cpp",
+        "src/wl_client/Program.cpp",
+        "src/wl_client/EglWindow.cpp",
+        "src/wl_client/wayland-android-protocol.c",
+        "src/wl_client/client_main.cpp",
+    ],
+    shared_libs: [
+        "libbinder",
+        "libcutils",
+        "libui",
+        "libgui",
+        "liblog",
+        "libutils",
+    ],
+    static_libs: [
+        "libffi",
+        "libwayland_client",
+        "libwayland_extension_client_protocols",
+    ],
+    include_dirs: [ "external/wayland/src" ],
+}

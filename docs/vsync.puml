@@ -1,0 +1,25 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant KWIN as kwin
+participant SurfaceFlinger as sf
+box "HIDL_HWC_PROCESS"
+participant HWC as hwc
+participant VSYNC_THREAD as hwct
+end box
+
+sf -> hwc : kwc open
+hwc -> hwc : create vsync thread
+hwc -> kwin : get display profile
+kwin --> hwc
+hwc -> hwct : create vsync thread
+hwct -> hwct : lock
+
+sf -> hwc : enable hwc vsync
+hwc -> hwct : notify lock
+hwct -> kwin : trigger vsync signal
+kwin --> hwct : return vsync si
+
+@enduml

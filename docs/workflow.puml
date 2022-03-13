@@ -1,0 +1,32 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant kwin
+participant init
+participant ServiceManager as sms
+participant WaylandManagerService as wls
+participant WaylandClientProxy as wlcp
+participant SurfaceFlinger as sf
+participant App as app
+
+init -> wls
+wls -> sms : 注册
+app -> sf : 创建 client 及 Layer
+sf -> sf :  Attach Layer
+sf -> sms : get WaylandManagerService
+sms --> sf
+sf -> wls : 创建 Wayland Client, TODO: 同步接口？
+wls -> wls : 创建 socketpair (可能不需要)
+wls ->  wlcp : fork 子进程
+wlcp -> wlcp : 创建 VirtualDisplay 及 OutputSurface
+wlcp -> kwin : 创建 Wayland Client
+kwin --> wlcp
+wlcp --> wls : 创建成功
+wls --> sf : Wayland Client 创建成功
+sf -> sf : 开始渲染
+app -> wlcp : on frame available
+wlcp -> kwin : push frame
+
+@enduml

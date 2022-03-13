@@ -1,0 +1,38 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant ZygoteInit
+participant caller
+participant ActivityThread
+participant Choreographer
+participant TransactionExecutor
+participant ResumeActivityItem
+participant WindowManagerImpl as wm
+participant WindowManagerGlobal as wmg
+participant ViewRootImpl
+
+ZygoteInit -> caller
+caller -> caller : run
+caller -> ActivityThread : main
+ActivityThread -> ActivityThread : looper.loop
+ActivityThread -> ActivityThread : handleMessage
+ActivityThread -> TransactionExecutor : resume
+TransactionExecutor -> ResumeActivityItem : resume
+ResumeActivityItem -> ActivityThread : handleResumeActivity
+ActivityThread -> wm : addView
+wm -> wmg : addView
+wmg -> ViewRootImpl : new ViewRootImpl
+
+ActivityThread -> ActivityThread : looper->handler->dispatch
+ActivityThread -> Choreographer : run
+Choreographer -> Choreographer : doFrame
+Choreographer -> ViewRootImpl : TraversalRunnable
+ViewRootImpl -> ViewRootImpl : performTraversal
+ViewRootImpl -> SurfaceView : onPreDraw
+SurfaceView -> ViewRootImpl : createBoundsSurface
+ViewRootImpl -> SurfaceSession : new
+SurfaceSession -> SurfaceFlinger : new Client
+
+@enduml

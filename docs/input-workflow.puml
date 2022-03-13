@@ -1,0 +1,46 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+box JingOS
+participant Launcher as lc
+participant libinput as input
+participant kwin as kwin
+participant proxy as jproxy
+endbox
+
+box Android
+participant proxy as aproxy
+participant ActivityManager as ams
+participant SurfaceFlinger as sf
+participant WL_Manager as wlms
+participant WL_Client_1 as wlclient_1
+participant App1 as app1
+participant InputReader as ir
+participant InputDispatcher as idp
+participant InputChannel_1 as ichan_1
+endbox
+
+wlms -> wlms : 创建 input device(4 个)
+lc -> jproxy : 启动应用_1
+jproxy -> aproxy : 启动应用_1
+aproxy -> ams : 启动应用_1
+ams -> app1 : 启动应用_1
+app1 -> sf : create layer_1
+sf -> wlms : start_app_1
+wlms -> wlclient_1 : fork wayland client
+wlclient_1 -> kwin : 连接 wayland server
+app1 -> wlclient_1 : update display content
+wlclient_1 -> kwin : push frame
+
+input -> kwin : Touch Event
+kwin -> kwin : 查找 Focus window
+kwin -> wlclient_1 : 发送 Touch Event
+wlclient_1 -> wlclient_1 : write to input device
+ir -> ir : read Touch Event
+ir -> idp
+idp -> ichan_1 : 创建 Channel
+ichan_1 -> app1 : 向 View 发送 Touch Event
+
+@enduml
